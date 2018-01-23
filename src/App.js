@@ -24,7 +24,7 @@ const Drawer = DrawerNavigator(
     CameraSetting2: { screen: CameraSetting2 },
   },
   {
-    initialRouteName: "RecommendTime",
+    initialRouteName: "CameraSetting",
     contentOptions: {
       activeTintColor: "#e91e63"
     },

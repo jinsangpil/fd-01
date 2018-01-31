@@ -17,21 +17,36 @@ import {
   Input,
 } from "native-base";
 import styles from "./styles";
-
+let base_val= 6;
+let speed_arr= {0:'2', 1:'4', 2:'8', 3:'15', 4:'30', 5:'60', 6:'120', 7:'240'};
 class CamaraSetting extends Component {
+
   constructor(props) {
     super(props);
+
     this.state = {
-      selected1: "key0"
+      f_val: 0,
+      i_val: 0,
+      s_val: 3
     };
   }
-  onValueChange(value: string) {
+  onValueChange(value: number) {
     this.setState({
-      selected1: value
+      f_val: value,
+      s_val: ( Number(value) + Number(this.state.i_val) ),
+    });
+    console.log('state', this.state);
+  }
+
+  onValueChange2(value: number) {
+    this.setState({
+      i_val: value,
+      s_val: ( Number(value) + Number(this.state.f_val) ),
     });
   }
 
   render() {
+
     return (
       <Container style={styles.container}>
         <Header>
@@ -51,34 +66,33 @@ class CamaraSetting extends Component {
 
         <Content>
           <Form>
+            <Label>조리개(F)</Label>
             <Picker
               iosHeader="Select one"
               mode="dropdown"
-              selectedValue={this.state.selected1}
+              selectedValue={this.state.f_val}
               onValueChange={this.onValueChange.bind(this)}
             >
-              <Item label="Full Frame" value="key0" />
-              <Item label="DSLR 1.3X" value="key1" />
-              <Item label="DSLR 1.5X" value="key2" />
-              <Item label="DSLR 1.6X" value="key3" />
-              <Item label="DSLR 1.9X" value="key4" />
-              <Item label="DSLR 2.0X" value="key5" />
-              <Item label="DSLR 2.7X" value="key6" />
-              <Item label="DSLR 3.9X" value="key7" />
+              <Item label="F1.4" value="0" />
+              <Item label="F2.0" value="1" />
+              <Item label="F2.8" value="2" />
+              <Item label="F4.0" value="3" />
             </Picker>
-
-            <Item floatingLabel>
-              <Label>Focal length(mm)</Label>
-              <Input />
-            </Item>
-            <Item floatingLabel>
-              <Label>Aperture(f)</Label>
-              <Input />
-            </Item>
-            <Item floatingLabel>
-              <Label>Focus distance(m)</Label>
-              <Input />
-            </Item>
+            <Label>ISO 감도</Label>
+            <Picker
+              iosHeader="Select one"
+              mode="dropdown"
+              selectedValue={this.state.i_val}
+              onValueChange={this.onValueChange2.bind(this)}
+            >
+              <Item label="800" value="4" />
+              <Item label="1600" value="3" />
+              <Item label="3200" value="2" />
+              <Item label="6400" value="1" />
+              <Item label="12800" value="0" />
+            </Picker>
+            <Label>셔터스피드(초)</Label>
+            <Input value={speed_arr[this.state.s_val]} disabled placeholder='Disabled Textbox' />
           </Form>
         </Content>
       </Container>

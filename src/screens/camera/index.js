@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { ScrollView } from "react-native";
 import {
   Container,
   Header,
@@ -12,7 +13,7 @@ import {
   Body,
   Footer,
   FooterTab,
-  Tabs, Tab,
+  Tabs, Tab, TabHeading,
 } from "native-base";
 import styles from "./styles";
 
@@ -59,22 +60,35 @@ class CamaraInfo extends Component {
           <Right />
         </Header>
 
-        <Content>
-        <Tabs initialPage={0} ref={(tabView) => {this.tabView = tabView}} tabUnderlineStyle={{opacity:0}}>
-          <Tab heading="setup">
+        <Tabs initialPage={0} ref={(tabView) => {this.tabView = tabView}} tabUnderlineStyle={{opacity:0}}  tabBarPosition="overlayBottom">
+          <Tab heading={'setup'}>
             <InfoSetup />
           </Tab>
-          <Tab heading="mode">
+          <Tab heading={'mode'}>
             <InfoMode />
           </Tab>
-          <Tab heading="focus">
+          <Tab heading={'focus'}>
             <InfoFocus />
           </Tab>
         </Tabs>
-        </Content>
+
       </Container>
     );
   }
 }
-
+/*
+        <Footer>
+          <FooterTab>
+            <Button onPress={() => this.tabView.goToPage(0)}>
+              <Text>setup</Text>
+            </Button>
+            <Button onPress={() => this.tabView.goToPage(1)}>
+              <Text>mode</Text>
+            </Button>
+            <Button onPress={() => this.tabView.goToPage(2)}>
+              <Text>focus</Text>
+            </Button>
+          </FooterTab>
+        </Footer>
+*/
 export default CamaraInfo;

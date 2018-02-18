@@ -11,32 +11,75 @@ import {
   Right,
   Body,
 } from "native-base";
+
+import {
+    Platform,
+    AppRegistry,
+    StyleSheet,
+    Text,
+    View,
+    Dimensions
+} from 'react-native';
+
+import { Constants, Location, Permissions } from 'expo';
+
 import styles from "./styles"; 
+
 class MoonInfo extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      times: null,
-      sunriseStr: null,
-      sunrisePos: null,
-      sunriseAzimuth: null,
-
-	
-      latitude : null,
-      longitude : null,
-      error : null
-    };
-  }
-
-
-
-
+    constructor(props) {
+        super(props);
+        
+        this.state = {
+          location: null,
+          errorMessage: null,
+          times: null,
+          sunriseStr: null,
+          sunrisePos: null,
+          sunriseAzimuth: null,
+        
+        
+          latitude : null,
+          longitude : null,
+          error : null
+        };
+    }
 
 
 
-  render() {
+componentWillMount() {
+    if (Platform.OS === 'android' && !Constants.isDevice) {
+        this.setState({
+            errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
+        });
+    } else {
+        this._getLocationAsync();
+    }
+}
 
+
+_getLocationAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+        this.setState({
+            errorMessage: 'Permission to access location was denied',
+        });
+    }
+    
+    let location = await Location.getCurrentPositionAsync({});
+    this.setState({ location });
+};
+
+
+render() {
+
+    let locationText = 'Waiting..';
+    if (this.state.errorMessage) {
+        locationText = this.state.errorMessage;
+    } else if (this.state.location) {
+        locationText = JSON.stringify(this.state.location);
+    }
+
+    /*-----------------------해 - 달 시간 가져오기*/
     getDateTime = function(dateObj){
         console.log(dateObj, "dateObj");
 /*
@@ -107,6 +150,11 @@ console.log(this.state, " -> this.state");
     var phase = moonIllu.phase;		    //초승->반->보름->반->그믐
 
 
+
+
+
+
+
     return (
       <Container style={styles.container}>
         <Header>
@@ -140,6 +188,10 @@ console.log(this.state, " -> this.state");
         <Text>{"\n"}</Text>
         <Text>달%(0:초승, 1:보름) : {fraction}</Text>
         <Text>달모양(초승->반->보름->반->그믐) : {phase}</Text>
+
+        <Text>{"\n"}</Text>
+        <Text>LocationText</Text>
+        <Text>{locationText}</Text>
         </Content>
       </Container>
     );

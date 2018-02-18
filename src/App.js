@@ -13,6 +13,7 @@ import CameraInfo from "./screens/camera/";
 import CameraSetting from "./screens/camera/setting";
 import CameraSetting2 from "./screens/camera/setting2";
 
+
 const Drawer = DrawerNavigator(
   {
     Home: { screen: Home },

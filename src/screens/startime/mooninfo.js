@@ -16,19 +16,18 @@ import {
     Platform,
     AppRegistry,
     StyleSheet,
-    Text,
     View,
     Dimensions
 } from 'react-native';
 
 import { Constants, Location, Permissions } from 'expo';
 
-import styles from "./styles"; 
+import styles from "./styles";
 
 class MoonInfo extends Component {
     constructor(props) {
         super(props);
-        
+
         this.state = {
           location: null,
           errorMessage: null,
@@ -36,8 +35,8 @@ class MoonInfo extends Component {
           sunriseStr: null,
           sunrisePos: null,
           sunriseAzimuth: null,
-        
-        
+
+
           latitude : null,
           longitude : null,
           error : null
@@ -64,7 +63,7 @@ _getLocationAsync = async () => {
             errorMessage: 'Permission to access location was denied',
         });
     }
-    
+
     let location = await Location.getCurrentPositionAsync({});
     this.setState({ location });
 };
@@ -95,8 +94,8 @@ getSeconds()	Returns the seconds (from 0-59)
         var year, month, day, hour, min, sec;
         year = dateObj.getFullYear();
         month= dateObj.getMonth();
-        day  = dateObj.getDay(); 
-        hour = dateObj.getHours(); 
+        day  = dateObj.getDay();
+        hour = dateObj.getHours();
         min  = dateObj.getMinutes();
         sec  = dateObj.getSeconds();
 
@@ -110,18 +109,18 @@ getSeconds()	Returns the seconds (from 0-59)
 
 	var SunCalc = require('suncalc');
 
-	// get today's sunlight times for London 
+	// get today's sunlight times for London
 	var sunTimes = SunCalc.getTimes(new Date(), har, lat);
 console.log("===================================================================");
-	console.log(sunTimes, "sunTimes"); 
+	console.log(sunTimes, "sunTimes");
 sunTimes.sunrise;	//일출 - object
 sunTimes.sunset;	//일몰 - object
 
 
-	// format sunrise time from the Date object 
+	// format sunrise time from the Date object
 //	var sunriseStr = times.sunrise.getHours() + ':' + times.sunrise.getMinutes();
 
-	var moonTimes =  SunCalc.getMoonTimes( new Date(), har, lat);  
+	var moonTimes =  SunCalc.getMoonTimes( new Date(), har, lat);
 console.log(moonTimes, "moonTimes");
 
 moonTimes.rise;		//월출

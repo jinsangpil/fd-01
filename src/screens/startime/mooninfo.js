@@ -1,23 +1,24 @@
-import React, { Component } from "react";
+import React, { Component, ImageBackground } from "react";
 import {
-  Container,
-  Header,
-  Title,
-  Content,
-  Button,
-  Icon,
-  Text,
-  Left,
-  Right,
-  Body,
+    Container,
+    Header,
+    Title,
+    Content,
+    Button,
+    Icon,
+    Text,
+    Left,
+    Right,
+    Body,
+    CardItem
 } from "native-base";
-
+import { Col, Row, Grid } from "react-native-easy-grid";
 import {
     Platform,
     AppRegistry,
     StyleSheet,
-    Text,
     View,
+    Image,
     Dimensions
 } from 'react-native';
 
@@ -29,24 +30,29 @@ class MoonInfo extends Component {
     constructor(props) {
         super(props);
         
+        date = new Date();
         this.state = {
-          location: null,
-          errorMessage: null,
-          times: null,
-          sunriseStr: null,
-          sunrisePos: null,
-          sunriseAzimuth: null,
+            location: null,
+            errorMessage: null,
+            times: null,
+            sunriseStr: null,
+            sunrisePos: null,
+            sunriseAzimuth: null,
         
         
-          latitude : null,
-          longitude : null,
-          error : null
+            latitude : null,
+            longitude : null,
+
+            nowYear : date.getFullYear(),
+            nowMonth : date.getMonth(),
+            error : null
         };
     }
 
 
 
 componentWillMount() {
+    //Expo API 를 통한 위치 가져오기
     if (Platform.OS === 'android' && !Constants.isDevice) {
         this.setState({
             errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
@@ -57,6 +63,7 @@ componentWillMount() {
 }
 
 
+//위치값 setState
 _getLocationAsync = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status !== 'granted') {
@@ -72,11 +79,41 @@ _getLocationAsync = async () => {
 
 render() {
 
+    //위치값 가져오기
     let locationText = 'Waiting..';
     if (this.state.errorMessage) {
+        var boolGps = false;
         locationText = this.state.errorMessage;
+
     } else if (this.state.location) {
+        var boolGps = true;
         locationText = JSON.stringify(this.state.location);
+    }
+
+
+    //해당년월 에 몇일까지 있는지 
+    leapchk = function (year,month){
+        current=new Date(year,month-1,1);
+        next=new Date(year,month,1);
+        if(current.getDay()>=5){
+            totaldate=42-(current.getDay()+(7-next.getDay()));
+        }
+        else{
+            totaldate=35-(current.getDay()+(next.getDay()==0 ? next.getDay():7-next.getDay()));
+        }
+        return totaldate;
+    }
+
+    function clone(obj) {
+      if (obj === null || typeof(obj) !== 'object')
+      return obj;
+      var copy = obj.constructor();
+      for (var attr in obj) {
+        if (obj.hasOwnProperty(attr)) {
+          copy[attr] = obj[attr];
+        }
+      }
+      return copy;
     }
 
     /*-----------------------해 - 달 시간 가져오기*/
@@ -103,15 +140,38 @@ getSeconds()	Returns the seconds (from 0-59)
         return year+"-"+month+"-"+day+" "+hour+":"+min+":"+sec;
     }
 
-	// 경도(har) / 위도(lat)  = 부천기준
-	var har = 37.490130;
-	var lat = 126.753939;
-
+	// 경도(har) / 위도(lat)  = 없을경우 default 서울시청37.5650172,126.8494631
+    /*
+     *  도시이름 가져오기 ( 영문코드값 )    적용X
+        https://www.npmjs.com/package/cities
+        https://www.npmjs.com/package/node-geocoder
+    */
+    if( boolGps ) {
+	    var har = this.state.location.coords.latitude; 
+	    var lat = this.state.location.coords.longitude; 
+    } else {
+        //서울특별시청
+	    var har = "37.5650172"; 
+	    var lat = "126.8494631"; 
+    }
 
 	var SunCalc = require('suncalc');
 
 	// get today's sunlight times for London 
+    var untilDay = leapchk(this.state.nowYear, this.state.nowMonth) 
+
+    var objData = {};
+//console.log(SunCalc.getTimes(new Date(this.state.year, this.state.month, 2), har, lat), "startTime");
+    for( i=1; i<=untilDay; i++ ) {
+        let suntime  = SunCalc.getTimes(new Date(this.state.year, this.state.month, 2), har, lat);
+//        Object.assign(objData, suntime);
+        objData[i] = {};
+        objData[i] = Object.assign(objData[i], {'suntime':suntime});
+        //objData[i]['suntime'] = suntime;
+    }
+    console.log(objData, "objData");
 	var sunTimes = SunCalc.getTimes(new Date(), har, lat);
+
 console.log("===================================================================");
 	console.log(sunTimes, "sunTimes"); 
 sunTimes.sunrise;	//일출 - object
@@ -120,6 +180,10 @@ sunTimes.sunset;	//일몰 - object
 
 	// format sunrise time from the Date object 
 //	var sunriseStr = times.sunrise.getHours() + ':' + times.sunrise.getMinutes();
+//
+//
+//
+//
 
 	var moonTimes =  SunCalc.getMoonTimes( new Date(), har, lat);  
 console.log(moonTimes, "moonTimes");
@@ -150,10 +214,7 @@ console.log(this.state, " -> this.state");
     var phase = moonIllu.phase;		    //초승->반->보름->반->그믐
 
 
-
-
-
-
+    var {height, width} = Dimensions.get('window');
 
     return (
       <Container style={styles.container}>
@@ -172,9 +233,57 @@ console.log(this.state, " -> this.state");
           <Right />
         </Header>
 
+        <Content style={{backgroundColor:'#00DD00', flexDirection:'row',flex:1}}>
+            <Grid style={{width:width, backgroundColor:'#444444'}}>
+                <Row size={1} style={{ backgroundColor: '#D954D7'}}>
+                    <Text>aaa</Text>
+                </Row>
+                <Row size={4} style={{ backgroundColor: '#cccccc'}}>
+                    <View>
+                        <View style={{alignSelf:"center"}}>
+                            <Text style={{fontSize:20}}>◁  {this.state.nowYear}.{this.state.nowMonth} ▷</Text>
+                        </View>
+        {/*
+                        <View style={{alignSelf:"center", height:250}}>
+                            <Image source={{uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Roundel-sable.svg/1200px-Roundel-sable.svg.png'}} style={{height: 200, width: 200/*, position:"absolute", top:0, left:'auto'}}/>
+                            <Image source={{uri: 'https://png.pngtree.com/element_origin_min_pic/00/16/05/105731797561d64.jpg'}} style={{height: 200, width: 200, position:"absolute", top:0, left:phase-50}}/>
+        
+                        </View>
+        */}
+
+                        <Text>경도 : {lat}</Text>
+                        <Text>위도 : {har}</Text>
+                        <Text>{"\n"}</Text>
+                        <Text>일출 : {sunTimes.sunrise.toString()}</Text>
+                        <Text>일몰 : {sunTimes.sunset.toString()}</Text>
+                
+                        <Text>{"\n"}</Text>
+                        <Text>월출 : {moonrise.toString()}</Text>
+                        <Text>월몰 : {moonset.toString()}</Text>
+                
+                        <Text>{"\n"}</Text>
+                        <Text>달%(0:초승, 1:보름) : {fraction}</Text>
+                        <Text>달모양(초승☽->상현(오른쪽반달◑)->보름● ->반(왼쪽반달◐)->그믐☾) : {phase}</Text>
+                
+                        <Text>{"\n"}</Text>
+                        <Text>LocationText</Text>
+                        <Text>{locationText}</Text>
+                    </View>
+                </Row>
+                <Row size={1} style={{ backgroundColor: '#D93735'}}>
+                    <Text>cc</Text>
+                </Row>
+            </Grid>
+        </Content>
+        
+      </Container>
+    );
+  }
+}
+/*
+ *
         <Content>
         <Text>{"\n"}</Text>
-        <Text>부천기준 ( 37.490130, 126.753939 )</Text>
         <Text>경도 : {lat}</Text>
         <Text>위도 : {har}</Text>
         <Text>{"\n"}</Text>
@@ -187,15 +296,11 @@ console.log(this.state, " -> this.state");
 
         <Text>{"\n"}</Text>
         <Text>달%(0:초승, 1:보름) : {fraction}</Text>
-        <Text>달모양(초승->반->보름->반->그믐) : {phase}</Text>
+        <Text>달모양(초승☽->상현(오른쪽반달◑)->보름● ->반(왼쪽반달◐)->그믐☾) : {phase}</Text>
 
         <Text>{"\n"}</Text>
         <Text>LocationText</Text>
         <Text>{locationText}</Text>
         </Content>
-      </Container>
-    );
-  }
-}
-
+ * */
 export default MoonInfo;

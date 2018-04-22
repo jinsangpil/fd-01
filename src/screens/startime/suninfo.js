@@ -90,7 +90,7 @@ var today = new Date('2018','4','2');
 console.log("todayMonth : "+    today.getMonth());
 
 if( action == "right" ) {
-    var plus = 1;
+    var plus = 0;
 } else {
     var plus = -1;
 }
@@ -217,6 +217,7 @@ boolGps =false;
             dateData = objData[day]['suntime'][outputKey[key]];
             this.state.tableData[i][key] = outputKey[key] == "date" ? this.state.nowMonth+"/"+day : (typeof dateData == "undefined" ? "-" : (dateData.getHours()<10?"0":"")+dateData.getHours() + ":" + (dateData.getMinutes()<10?"0":"")+dateData.getMinutes()); 
         }
+
         i++;
     }
     

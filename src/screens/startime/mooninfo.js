@@ -209,9 +209,11 @@ boolGps =false;
     console.log(objData, "objData");
 
     var outputKey = this.state.tableHead = ['date', 'rise','set'];
-        this.state.flexArr = [1,1,1];
+//    this.state.flexArr = [1,1,1];
+//    this.setState({flexArr:[1,1,1]});
 
     var i = 0;
+//    this.setState({tableData:[]});
     for( var day in objData ) {
         this.state.tableData[i] = new Array();
         for( key in outputKey ) {
@@ -284,10 +286,13 @@ console.log(this.state, " -> this.state");
 
         <Content style={{flex:1}}>
             <ScrollView style={{flex:1}}>
-                    <Button iconLeft light small onPress={() => this._btnDate('left')}><Icon name='arrow-back' /><Text>Left</Text></Button>
-                    <Text style={{fontSize:20}}>{this.state.nowYear}.{this.state.nowMonth}</Text>
-                    <Button iconRight light small onPress={() => this._btnDate('right')} ><Icon name='arrow-forward' /><Text>Right</Text></Button>
-
+                <View style={{alignSelf:"center"}}>
+                    <Text>
+                        <Text onPress={() => this._btnDate('left')}>  ◁    </Text>
+                        <Text style={{fontSize:20}}>{this.state.nowYear}.{this.state.nowMonth}</Text>
+                        <Text onPress={() => this._btnDate('right')}>    ▷  </Text>
+                    </Text>
+                </View>
 {/*
                 <View style={{alignSelf:"center", height:250}}>
                     <Image source={{uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Roundel-sable.svg/1200px-Roundel-sable.svg.png'}} style={{height: 200, width: 200/*, position:"absolute", top:0, left:'auto'}}/>

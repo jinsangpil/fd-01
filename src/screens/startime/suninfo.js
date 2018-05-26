@@ -283,9 +283,13 @@ console.log(this.state, " -> this.state");
 
         <Content style={{flex:1}}>
             <ScrollView style={{flex:1}}>
-                    <Button iconLeft light small onPress={() => this._btnDate('left')}><Icon name='arrow-back' /><Text>Left</Text></Button>
-                    <Text style={{fontSize:20}}>{this.state.nowYear}.{this.state.nowMonth}</Text>
-                    <Button iconRight light small onPress={() => this._btnDate('right')} ><Icon name='arrow-forward' /><Text>Right</Text></Button>
+                <View style={{alignSelf:"center"}}>
+                    <Text>
+                        <Text onPress={() => this._btnDate('left')}>  ◁    </Text>
+                        <Text style={{fontSize:20}}>{this.state.nowYear}.{this.state.nowMonth}</Text>
+                        <Text onPress={() => this._btnDate('right')}>    ▷  </Text>
+                    </Text>
+                </View>
 
 {/*
                 <View style={{alignSelf:"center", height:250}}>

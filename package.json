@@ -41,7 +41,7 @@
     "react-native": "0.50.1",
     "react-native-gps": "^0.1.1",
     "react-native-location": "^0.27.0",
-    "react-native-table-component": "^1.1.7",
+    "react-native-table-component-pro": "^1.0.1",
     "react-navigation": "1.0.0-beta.19",
     "suncalc": "^1.8.0"
   }

@@ -23,7 +23,8 @@ import {
     Alert,
     Dimensions
 } from 'react-native';
-import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
+//import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
+import { Table, TableWraper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component-pro';
 
 
 import { Constants, Location, Permissions } from 'expo';
@@ -53,7 +54,7 @@ class MoonInfo extends Component {
 
             tableHead : [],
             tableData : [],
-            flexArr : []
+//            flexArr : []
         };
     }
 
@@ -107,6 +108,7 @@ d.setMonth(d.getMonth()+plus+1 );
 }
 
 render() {
+    const tableHead = ['date', 'rise','set'];
 
     //위치값 가져오기
     let locationText = 'Waiting..';
@@ -208,26 +210,42 @@ boolGps =false;
     }
     console.log(objData, "objData");
 
-    var outputKey = this.state.tableHead = ['date', 'rise','set'];
+    this.setState({tableHead:['date', 'rise','set']});
+
 //    this.state.flexArr = [1,1,1];
 //    this.setState({flexArr:[1,1,1]});
 
     var i = 0;
+    var k = 0;
+    //TODO
 //    this.setState({tableData:[]});
+    var tableData =  [];
     for( var day in objData ) {
-        this.state.tableData[i] = new Array();
-        for( key in outputKey ) {
-            dateData = objData[day]['moontime'][outputKey[key]];
-            this.state.tableData[i][key] = outputKey[key] == "date" ? this.state.nowMonth+"/"+day : (typeof dateData == "undefined" ? "-" : (dateData.getHours()<10?"0":"")+dateData.getHours() + ":" + (dateData.getMinutes()<10?"0":"")+dateData.getMinutes()); 
+//        this.setState({tableData[i] : new Array()});
+        tableData[i] = [];
+        dateData = {};
+        for( key in tableHead ) {
+            dateData = objData[day]['moontime'][this.state.tableHead[key]];
+            tableData[i][k] = this.state.tableHead[k] == "date" ? this.state.nowMonth+"/"+day : ( typeof dateData == "undefined" ? "-" : (dateData.getHours()<10?"0":"")+dateData.getHours() + ":" + (dateData.getMinutes()<10?"0":"")+dateData.getMinutes());
+
+            //this.setState({tableData[i][key] : (outputKey[key] == "date" ? this.state.nowMonth+"/"+day : (typeof dateData == "undefined" ? "-" : (dateData.getHours()<10?"0":"")+dateData.getHours() + ":" + (dateData.getMinutes()<10?"0":"")+dateData.getMinutes()))}); 
+            k++;
         }
 
+        k=0;
         i++;
     }
-    
+    console.log(tableData, "tableData");
+   
+//    this.setState({'tableData': tableData});
+
+
 	var sunTimes = SunCalc.getTimes(new Date(), har, lat);
 
 console.log("===================================================================");
 console.log(this.state.tableHead, "tableHeader===================");
+console.log("===================================================================");
+console.log(this.state.tableData, "tableData===================");
 
 //sunTimes.sunrise;	//일출 - object
 //sunTimes.sunset;	//일몰 - object
@@ -266,7 +284,6 @@ console.log(this.state, " -> this.state");
     var {height, width} = Dimensions.get('window');
 
 
-
     return (
       <Container style={styles.container}>
         <Header>
@@ -301,8 +318,7 @@ console.log(this.state, " -> this.state");
                 </View>
 */}
 {/*
-310                     <Table borderStyle={{borderWidth: 2, borderColor: '#c8e
-310                 <View style={{width:300}}>
+                <View style={{width:300}}>
                 <Text>경도 : {lat} / 위도 : {har}</Text>
                 <Text>{"\n"}</Text>
                 <Text>일출 : {sunTimes.sunrise.toString()}</Text>
@@ -320,12 +336,15 @@ console.log(this.state, " -> this.state");
                 <Text>{locationText}</Text>
 */}
 
+
                 <View style={{flex:1}}>
                     <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}}>
-                        <Row data={this.state.tableHead} flexArr={this.state.flexArr} style={styles.head} textStyle={styles.text}/>
-                        <Rows data={this.state.tableData} flexArr={this.state.flexArr} textStyle={styles.text}/>
+                        <Row data={tableHead} style={styles.head} textStyle={styles.text}/>
+                        <Rows data={tableData} style={styles.row} textStyle={styles.text}/>
                     </Table>
                 </View>
+
+
 
 {/*
                 <View style={{ flex: 1, padding: 16, paddingTop: 30, backgroundColor: '#fff' }}>
